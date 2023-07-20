@@ -1,0 +1,357 @@
+img {
+    width: 100%;
+    vertical-align: middle;
+}
+
+
+body {
+    overflow-y: scroll;
+}
+
+
+.btn {
+    width: 100%;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 35px;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 2px 2px 4px #999;
+    &.back {
+        background-color: #ccc;
+        box-shadow: unset;
+    }
+}
+
+.received,
+.readSheet,
+.writeSheet{
+    opacity: 0;
+    transform: translateY(20px);
+    animation: show 0.8s forwards;
+}
+
+@keyframes show {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.indexBox {
+    width: calc(100vw - 20px);
+    max-width: 800px;
+    padding: 30px 10px 100px;
+    margin: auto;
+    font-size: 14px;
+}
+
+// 選擇
+.selBox {
+    margin-bottom: 40px;
+    h5 {
+        padding-bottom: 15px;
+        font-size: 26px;
+        font-weight: bold;
+        text-align: center;
+    }
+    ul {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    li {
+        height: 30px;
+        padding: 0px 25px;
+        line-height: 30px;
+        border-radius: 30px;
+        cursor: pointer;
+        &.on {
+            background-color: #000;
+            color: #fff;
+            box-shadow: 2px 2px 4px #999;
+        }
+    }
+}
+
+// 寫入表格
+.writeSheet {
+    max-width: 500px;
+    margin: auto;
+    padding: 25px;
+    border-radius: 5px;
+    box-shadow: 0 0 8px #999;
+    h5 {
+        padding-bottom: 20px;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .fillin {
+        margin-bottom: 30px;
+        
+        label{
+            padding-bottom: 18px;
+            display: block;
+            position: relative;
+        }
+
+        label + label {
+            margin-top: 5px;
+        }
+
+        .item{
+            padding: 0 5px;
+            border-bottom: 2px solid #000;
+            &.area{
+                padding: 0;
+                border-bottom: none;
+                p{
+                    padding: 0 5px;
+                }
+            }
+        }
+
+        p {
+            margin-bottom: 3px;
+        }
+        select,
+        input {
+            width: 100%;
+            @include fullNone;
+            height: 30px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #000;
+        }
+        select {
+            cursor: pointer;
+        }
+
+        textarea{
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 2px solid #000;
+            resize: none;
+        }
+
+        .errorTxt {
+            padding-top: 2px;
+            font-size: 12px;
+            color: #f00;
+            text-align: right;
+            position: absolute;
+            @include pos(br,0)
+        }
+    }
+
+    .btnbox {
+        display: flex;
+        gap: 10px;
+        .btn {
+            &:nth-child(1) {
+                flex: 1.3;
+            }
+            &:nth-child(2) {
+                flex: 2;
+            }
+        }
+    }
+    .confirm{
+        width: calc(100% - 40px);
+        max-width: 300px;
+        margin: auto;
+    }
+}
+
+// 讀取表格
+.readSheet{
+    max-width: 500px;
+    margin: auto;
+    
+    .item{
+        padding: 40px 15px 15px;
+        box-shadow: 0 0 8px #999;
+        position: relative;
+    }
+
+    .item + .item{
+        margin-top: 10px;
+    }
+
+    .del{
+        width: 30px;
+        height: 30px;
+        border-radius: 5px;
+        background: url(../images/del.svg) no-repeat center / 15px;
+        background-color: #000;
+        position: absolute;
+        @include pos(tr,6px,10px);
+        cursor: pointer;
+    }
+
+    .usrMsg{
+        li{
+            width: 100%;
+            display: flex;
+            border-bottom: 1px solid #000;
+        }
+        li + li{
+            margin-top: 2px;
+        }
+        span{
+            width: 100px;
+            padding: 5px;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        p{
+            padding: 5px;
+        }
+
+    }
+    .userOpinion{
+        margin-top: 5px;
+        border: 1px solid #000;
+        .title{
+            padding: 5px;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+        }
+        p{
+            min-height: 30px;
+            padding: 5px;
+        }
+    }
+
+    .pageNum{
+        margin-top: 20px;
+        ul{
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        li{
+            min-width: 30px;
+            height: 30px;
+            padding: 0 5px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 30px;
+            background-color: #999;
+            box-shadow: 2px 2px 3px #555;
+            color: #fff;
+            cursor: pointer;
+            &.on{
+                background-color: #000;
+            }
+        }
+        
+    }
+}
+
+// 確認寫入
+.received {
+    max-width: 500px;
+    margin: 50px auto 0;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 0 8px #999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .gou {
+        width: 75px;
+        height: 75px;
+        margin-bottom: 10px;
+        border-radius: 50%;
+        position: relative;
+        background-color: #000;
+        &::before {
+            content: "";
+            width: 20px;
+            height: 32px;
+            margin: auto;
+            transform: rotate(40deg);
+            position: absolute;
+            @include pos(tbrl, 0);
+            border-right: 5px solid #fff;
+            border-bottom: 5px solid #fff;
+        }
+    }
+
+
+    p{
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .btn{
+        width: calc(100% - 40px);
+        max-width: 300px;
+        margin: 40px auto 0;
+    }
+}
+
+.load{
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    @include pos(tl,0);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .lds-spinner {
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 80px;
+        div{
+            transform-origin: 40px 40px;
+            animation: lds-spinner 1.2s linear infinite;
+            &::after{
+                content: " ";
+                display: block;
+                width: 6px;
+                height: 18px;
+                position: absolute;
+                @include pos(tl,3px,37px);   
+                border-radius: 20%;
+                background: #fff;
+            }
+
+            @for $i from 0 through 11 {
+                &:nth-child(#{$i+1}){
+                    transform: rotate(#{$i * 30}deg);
+                    animation-delay: -#{1.1 - $i * 0.1}s;
+                }
+            }
+        }
+    }
+}
+
+@keyframes lds-spinner {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

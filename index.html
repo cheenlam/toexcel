@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Document</title>
+    <script src="js/vue3.js"></script>
+    <script src="js/axios.js"></script>
+    <link rel="stylesheet" href="scss/all.css">
+</head>
+
+<body>
+    <div class="indexBox" id="app">
+        <div class="load" v-if="load.sw">
+            <div class="lds-spinner">
+                <div v-for="(item,index) in load.num"></div>
+            </div>
+        </div>
+
+        <!-- 選擇 -->
+        <div class="selBox">
+            <h5>Excel API 功能選擇</h5>
+            <ul>
+                <li @click="selNum = 0,reset()" :class="{'on': selNum == 0}">寫入表格</li>
+                <li @click="selNum = 1,getAll(),reset(),load.sw = true" :class="{'on': selNum == 1}">表格全資料</li>
+                <li @click="selNum = 2,getPage(),load.sw = true" :class="{'on': selNum == 2}">表格分頁顯示</li>
+            </ul>
+        </div>
+
+        <!-- 寫入資料 -->
+        <div class="writeSheet" v-if="selNum == 0">
+            <h5>寫入表格</h5>
+            <div class="fillin">
+                <label>
+                    <div class="item">
+                        <p>名稱</p>
+                        <input type="text" placeholder="請輸入名稱" v-model="formVal.name" @input="error.name = false">
+                    </div>
+                    <div class="errorTxt" v-if="error.name">栏位不得为空</div>
+                </label>
+
+                <label>
+                    <div class="item">
+                        <p>信箱</p>
+                        <input type="text" placeholder="請輸入email信箱" v-model="formVal.email" @input="error.email = false">
+                    </div>
+                    <div class="errorTxt" v-if="error.email">栏位不得为空</div>
+                </label>
+
+                <label>
+                    <div class="item">
+                        <p>聯絡方式</p>
+                        <input type="text" placeholder="請輸入聯絡方式" v-model="formVal.conn" @input="error.conn = false">
+                    </div>
+                    <div class="errorTxt" v-if="error.conn">栏位不得为空</div>
+                </label>
+
+                <label>
+                    <div class="item area">
+                        <p>反饋意見</p>
+                        <textarea v-model="formVal.opinion"></textarea>
+                    </div>
+                </label>
+
+
+                <!-- <label>
+                    <div class="item">
+                        <p>联络方式</p>
+                        <select>
+                            <option value="0">QQ</option>
+                            <option value="1">WeChat</option>
+                            <option value="2">Telegram</option>
+                        </select>
+                    </div>
+                </label> -->
+            </div>
+            <div class="btn" @click="toWrite()">寫入表格</div>
+        </div>
+        <!-- 資料全顯示 -->
+        <div class="readSheet" v-if="selNum == 1">
+            <div class="item" v-for="(item,index) in readAll">
+                <div class="del" @click="del(index),load.sw = true"></div>
+                <ul class="usrMsg">
+                    <li>
+                        <span>客戶名稱</span>
+                        <p>{{item.name}}</p>
+                    </li>
+                    <li>
+                        <span>電子信箱</span>
+                        <p>{{item.email}}</p>
+                    </li>
+                    <li>
+                        <span>聯絡方式</span>
+                        <p>{{item.conn}}</p>
+                    </li>
+                </ul>
+                <div class="userOpinion">
+                    <div class="title">意見反饋</div>
+                    <p>{{item.opinion}}</p>
+                </div>
+            </div>
+        </div>
+        <!-- 資料分頁顯示 -->
+        <div class="readSheet" v-if="selNum == 2">
+            <div class="item" v-for="(item,index) in readPage">
+                <div class="del" @click="del(index),load.sw = true"></div>
+                <ul class="usrMsg">
+                    <li>
+                        <span>客戶名稱</span>
+                        <p>{{item.name}}</p>
+                    </li>
+                    <li>
+                        <span>電子信箱</span>
+                        <p>{{item.email}}</p>
+                    </li>
+                    <li>
+                        <span>聯絡方式</span>
+                        <p>{{item.conn}}</p>
+                    </li>
+                </ul>
+                <div class="userOpinion">
+                    <div class="title">意見反饋</div>
+                    <p>{{item.opinion}}</p>
+                </div>
+            </div>
+
+            <div class="pageNum">
+                <ul>
+                    <li v-for="(item,index) in totalPage" 
+                        :class="{'on' : index ==  pageNum}"
+                        @click="pageNum = index,getPage(),load.sw = true"
+                    >{{index+1}}</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- 確認寫入 -->
+        <div class="received" v-if="selNum == 4">
+            <div class="gou"></div>
+            <p>已寫入Excel表格</p>
+
+            <div class="btn" @click="selNum = 0">返回寫入</div>
+        </div>
+    </div>
+
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    selNum: 0,
+                    readAll: '',
+                    readPage: '',
+                    totalPage: 0,
+                    pageNum: 0,
+
+                    load : {
+                        sw : false,
+                        num : 12
+                    },
+
+                    formVal : {
+                        name : '',
+                        email: '',
+                        conn: '',
+                        opinion : ''
+                    },
+
+                    error :{
+                        name : false,
+                        email: false,
+                        conn: false,
+                        opinion : false
+                    }
+
+                }
+            },
+            methods: {
+                reset(){
+                    this.pageNum = 0;
+                    this.getPage();
+                    this.formVal.name = '';
+                    this.formVal.email = '';
+                    this.formVal.conn = '';
+                    this.formVal.opinion = '';
+
+                    this.error.name = false;
+                    this.error.email = false;
+                    this.error.conn = false;
+                    this.error.opinion = false;
+                },
+
+                toWrite(){
+                   
+                    if(this.ckForm()){
+                        this.load.sw = true;
+                        let apiUrl = "https://script.google.com/macros/s/AKfycby-diVelX6OsZNU9vyCFCtipstSAavYO9LPXyh8mrCS6iNpaGf48yBsyg1y-c_xeesgVw/exec";
+                        axios({
+                            type: 'get',
+                            url: apiUrl,
+                            params:{
+                                apitype : 0,
+                                name:this.formVal.name,
+                                email:this.formVal.email,
+                                conn:this.formVal.conn,
+                                opinion:this.formVal.opinion
+                            }
+                        }).then((res) => {
+                            if(res.data.code == 200){
+                               this.getAll();
+                               this.getPage();
+                               this.reset();
+                               this.selNum = 4;
+
+                               this.load.sw = false;
+                            } 
+                        });
+                    } 
+                },
+                // 確認表單內容
+                ckForm(){
+                    let state = true;
+                    if(this.formVal.name == ''){ 
+                        this.error.name = true;
+                        state = false;
+                    }
+                    if(this.formVal.email == ''){ 
+                        this.error.email = true;
+                        state = false;
+                    }
+                    if(this.formVal.conn == ''){ 
+                        this.error.conn = true;
+                        state = false;
+                    }
+                  
+                    return state;
+                },
+                getAll(){
+                    let apiUrl = "https://script.google.com/macros/s/AKfycby-diVelX6OsZNU9vyCFCtipstSAavYO9LPXyh8mrCS6iNpaGf48yBsyg1y-c_xeesgVw/exec";
+                    axios({
+                        type: 'get',
+                        url: apiUrl,
+                        params:{
+                            apitype : 1,
+                            page:0,
+                            reverse : 0,
+                            pageNum: 0,
+                            valNum : 0,
+                        }
+                    }).then((res) => {
+                        if(res.data.code == 200){
+                            this.readAll = res.data.data;
+                            this.load.sw = false;
+                        } 
+                    });
+                },
+                getPage(){
+                    let apiUrl = "https://script.google.com/macros/s/AKfycby-diVelX6OsZNU9vyCFCtipstSAavYO9LPXyh8mrCS6iNpaGf48yBsyg1y-c_xeesgVw/exec";
+                    axios({
+                        type: 'get',
+                        url: apiUrl,
+                        params:{
+                            apitype : 1,
+                            page:1,
+                            reverse : 0,
+                            pageNum: this.pageNum + 1,
+                            valNum : 3,
+                        }
+                    }).then((res) => {
+                        if(res.data.code == 200){
+                            this.totalPage = res.data.totalPage;
+                            this.readPage = res.data.data;
+                            this.load.sw = false;
+
+                            if(this.pageNum >= res.data.totalPage){
+                                this.pageNum = res.data.totalPage-1;
+                            }
+                        }    
+                    });
+                },
+                del(idx){
+                    let apiUrl = "https://script.google.com/macros/s/AKfycby-diVelX6OsZNU9vyCFCtipstSAavYO9LPXyh8mrCS6iNpaGf48yBsyg1y-c_xeesgVw/exec";
+                    axios({
+                        type: 'get',
+                        url: apiUrl,
+                        params:{
+                            apitype : 2,
+                            dalidx: idx+2
+                        }
+                    }).then((res) => {
+                        if(this.selNum == 1){
+                            this.getAll();
+                        }else if(this.selNum == 2){
+                            this.getPage();
+                        }  
+                    });
+                }
+            },
+            mounted() {
+                this.getAll();
+                this.getPage();
+            },
+        }).mount("#app");
+
+
+    </script>
+</body>
+
+</html>
