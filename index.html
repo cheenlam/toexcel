@@ -81,7 +81,7 @@
         <!-- 資料全顯示 -->
         <div class="readSheet" v-if="selNum == 1">
             <div class="item" v-for="(item,index) in readAll">
-                <div class="del" @click="del(index),load.sw = true"></div>
+                <div class="del" @click="del(index+2),load.sw = true"></div>
                 <ul class="usrMsg">
                     <li>
                         <span>客戶名稱</span>
@@ -105,10 +105,10 @@
         <!-- 資料分頁顯示 -->
         <div class="readSheet" v-if="selNum == 2">
             <div class="item" v-for="(item,index) in readPage">
-                <div class="del" @click="del(index),load.sw = true"></div>
+                <div class="del" @click="del(pageNum*showNum + index+2),load.sw = true"></div>
                 <ul class="usrMsg">
                     <li>
-                        <span>客戶名稱</span>
+                        <span>客戶名稱 {{pageNum*showNum + index + 2}}</span>
                         <p>{{item.name}}</p>
                     </li>
                     <li>
@@ -155,6 +155,7 @@
                     readPage: '',
                     totalPage: 0,
                     pageNum: 0,
+                    showNum:3,
 
                     load : {
                         sw : false,
@@ -266,7 +267,7 @@
                             page:1,
                             reverse : 0,
                             pageNum: this.pageNum + 1,
-                            valNum : 3,
+                            valNum : this.showNum,
                         }
                     }).then((res) => {
                         if(res.data.code == 200){
@@ -287,7 +288,7 @@
                         url: apiUrl,
                         params:{
                             apitype : 2,
-                            dalidx: idx+2
+                            dalidx: idx
                         }
                     }).then((res) => {
                         if(this.selNum == 1){
